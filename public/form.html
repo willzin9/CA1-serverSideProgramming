@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>CA1 User Registration Form</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h1>User Registration Form</h1>
+
+    <form id="userForm">
+        <!-- First Name -->
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" maxlength="20" required>
+        <small>Max 20 characters, letters and numbers only.</small>
+
+        <!-- Last Name -->
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" maxlength="20" required>
+        <small>Max 20 characters, letters and numbers only.</small>
+
+        <!-- Email -->
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <small>Must be a valid email address (example@email.com).</small>
+
+        <!-- Phone Number -->
+        <label for="phone_number">Phone Number:</label>
+        <input type="text" id="phone_number" name="phone_number" maxlength="10" inputmode="numeric" required>
+        <small>Exactly 10 digits, numbers only.</small>
+
+        <!-- Eircode -->
+        <label for="eircode">Eircode:</label>
+        <input type="text" id="eircode" name="eircode" maxlength="6" required>
+        <small>6 characters, must start with a number.</small>
+
+        <!-- Submit Button -->
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Message Area -->
+    <div id="messages"></div>
+
+</body>
+</html>
