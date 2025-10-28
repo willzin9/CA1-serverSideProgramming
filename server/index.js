@@ -2,20 +2,18 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-
+const db = require('./db');
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-
+const PORT = process.env.PORT || 3000;
 app.use((req, res, next) => {
   console.log('REQ:', req.method, req.url);
   next();
 });
 
-
-const PORT = process.env.PORT || 3000;
 
 // ===== 2️⃣ Helper validation functions =====
 const isAlphanumeric = (str) => /^[a-zA-Z0-9]+$/.test(str);
