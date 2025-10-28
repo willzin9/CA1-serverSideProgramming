@@ -1,50 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>CA1 User Registration Form</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CA1 User Registration Form</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <h1>User Registration Form</h1>
 
-    <h1>User Registration Form</h1>
+  <form id="userForm">
+    <!-- First Name -->
+    <label for="first_name">First Name:</label>
+    <input type="text" id="first_name" name="first_name" maxlength="20" required />
+    <small>Max 20 characters, letters and numbers only.</small>
+    <span id="first_name_error" class="error"></span>
 
-    <form id="userForm">
-        <!-- First Name -->
-        <label for="first_name">First Name:</label>
-        <input type="text" id="first_name" name="first_name" maxlength="20" required>
-        <small>Max 20 characters, letters and numbers only.</small>
+    <!-- Last Name -->
+    <label for="last_name">Last Name:</label>
+    <input type="text" id="last_name" name="last_name" maxlength="20" required />
+    <small>Max 20 characters, letters and numbers only.</small>
+    <span id="last_name_error" class="error"></span>
 
-        <!-- Last Name -->
-        <label for="last_name">Last Name:</label>
-        <input type="text" id="last_name" name="last_name" maxlength="20" required>
-        <small>Max 20 characters, letters and numbers only.</small>
+    <!-- Email -->
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required />
+    <small>Must be a valid email address (example@email.com).</small>
+    <span id="email_error" class="error"></span>
 
-        <!-- Email -->
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <small>Must be a valid email address (example@email.com).</small>
+    <!-- Phone Number -->
+    <label for="phone_number">Phone Number:</label>
+    <input type="text" id="phone_number" name="phone_number" maxlength="10" inputmode="numeric" required />
+    <small>Exactly 10 digits, numbers only.</small>
+    <span id="phone_number_error" class="error"></span>
 
-        <!-- Phone Number -->
-        <label for="phone_number">Phone Number:</label>
-        <input type="text" id="phone_number" name="phone_number" maxlength="10" inputmode="numeric" required>
-        <small>Exactly 10 digits, numbers only.</small>
+    <!-- Eircode -->
+    <label for="eircode">Eircode:</label>
+    <input type="text" id="eircode" name="eircode" maxlength="6" required />
+    <small>6 characters, must start with a number.</small>
+    <span id="eircode_error" class="error"></span>
 
-        <!-- Eircode -->
-        <label for="eircode">Eircode:</label>
-        <input type="text" id="eircode" name="eircode" maxlength="6" required>
-        <small>6 characters, must start with a number.</small>
+    <!-- Submit Button -->
+    <button type="submit">Submit</button>
+  </form>
 
-        <!-- Submit Button -->
-        <button type="submit">Submit</button>
-    </form>
+  <!-- Single message area -->
+  <div id="messages" aria-live="polite"></div>
 
-    <!-- Message Area -->
-    <div id="messages"></div>
-
-    <script src="client.js" defer></script>
-
-
+  <!-- Client JS -->
+  <script src="client.js" defer></script>
 </body>
 </html>

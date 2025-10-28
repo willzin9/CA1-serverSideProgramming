@@ -8,6 +8,10 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
+// Serve the frontend (public folder)
+const path = require('path');
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
 const PORT = process.env.PORT || 3000;
 app.use((req, res, next) => {
   console.log('REQ:', req.method, req.url);

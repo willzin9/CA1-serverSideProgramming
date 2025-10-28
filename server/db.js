@@ -2,11 +2,11 @@
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
-// Caminho do arquivo do banco
+
 const dbPath = path.join(__dirname, 'data', 'app.db');
 const db = new sqlite3.Database(dbPath);
 
-// Criação da tabela
+
 const INIT_SQL = `
 CREATE TABLE IF NOT EXISTS user_data (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -1,3 +1,4 @@
+console.log('✅ client.js loaded');
 
 function getEl(id) {
   return document.getElementById(id);
@@ -69,6 +70,7 @@ function validateEircode(value) {
 
 
 function handleSubmit(event) {
+  console.log('🚀 handleSubmit fired');
   event.preventDefault();
   getEl('messages').textContent = '';
   getEl('messages').className = '';
@@ -109,9 +111,70 @@ function handleSubmit(event) {
   } else {
     getEl('messages').textContent = "Form is valid. Ready to submit.";
     getEl('messages').classList.add('success-text');
-    
-  }
+    } else {
+  // Build payload from inputs
+  const payload = {
+    first_name: getEl('first_name').value.trim(),
+    last_name:  getEl('last_name').value.trim(),
+    email:      getEl('email').value.trim(),
+    phone_number: getEl('phone_number').value.trim(),
+    eircode:      getEl('eircode').value.trim().toUpperCase()
+  };
+
+  // Disable button to prevent double submit
+  const submitBtn = event.submitter || document.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.disabled = true;
+
+  // Send to backend
+  fetch('/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+    .then(async (resp) => {
+      const data = await resp.json();
+      const msg = getEl('messages');
+      msg.className = '';
+
+      if (resp.ok) {
+        msg.textContent = data.message || 'Form submitted successfully.';
+        msg.classList.add('success-text');
+
+        // Optional: clear form after success
+        ['first_name','last_name','email','phone_number','eircode'].forEach(clearError);
+        document.getElementById('userForm').reset();
+        getEl('first_name').focus();
+
+        // Optional: show ID returned by the server
+        if (data.id) {
+          const note = document.createElement('div');
+          note.textContent = `Saved with ID #${data.id}`;
+          note.classList.add('success-text');
+          msg.appendChild(document.createElement('br'));
+          msg.appendChild(note);
+        }
+      } else if (resp.status === 400 && data.errors) {
+        data.errors.forEach(e => showError(e.field, e.message));
+        msg.textContent = 'Please fix the highlighted fields.';
+        msg.classList.add('error-text');
+        if (data.errors.length) getEl(data.errors[0].field).focus();
+      } else {
+        msg.textContent = data.message || 'Unexpected server error.';
+        msg.classList.add('error-text');
+      }
+    })
+    .catch((err) => {
+      const msg = getEl('messages');
+      msg.className = '';
+      msg.textContent = 'Network error. Try again.';
+      msg.classList.add('error-text');
+      console.error(err);
+    })
+    .finally(() => {
+      if (submitBtn) submitBtn.disabled = false;
+    });
 }
+
 
 
 window.addEventListener('DOMContentLoaded', () => {
