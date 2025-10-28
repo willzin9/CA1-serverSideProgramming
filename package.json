@@ -1,0 +1,28 @@
+{
+  "name": "ca1-serversideprogramming",
+  "version": "1.0.0",
+  "description": "CA1 – Server-Side Programming  \r Student: William de Brito Leal (ID: 2024230)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willzin9/CA1-serverSideProgramming.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/willzin9/CA1-serverSideProgramming/issues"
+  },
+  "homepage": "https://github.com/willzin9/CA1-serverSideProgramming#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  }
+}
