@@ -1,15 +1,107 @@
+/* Base layout */
+:root {
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --ok: #0a7f2e;
+  --err: #b00020;
+  --border: #e2e8f0;
+  --focus: #2563eb;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  padding: 24px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* Container */
+h1 {
+  margin: 0 0 16px;
+  font-size: clamp(20px, 3vw, 28px);
+}
+
+form {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 760px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+/* Inputs */
+label {
+  display: block;
+  margin-top: 14px;
+  font-weight: 600;
+}
+input[type="text"],
+input[type="email"] {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+  outline: none;
+}
+input:focus {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Hints and errors by field */
+small {
+  display: block;
+  color: var(--muted);
+  margin-top: 6px;
+}
 .error-input {
-  border: 2px solid red;
-  background-color: #ffeaea;
+  border-color: var(--err) !important;
+  box-shadow: 0 0 0 3px rgba(176, 0, 32, 0.12) !important;
+}
+.error {
+  display: block;
+  color: var(--err);
+  margin-top: 6px;
+  font-size: 0.95rem;
 }
 
-.error-text {
-  color: red;
-  font-size: 0.9em;
+/* Submit button */
+button[type="submit"] {
+  margin-top: 18px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--focus);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
 }
+button[type="submit"]:hover { filter: brightness(0.96); }
+button[type="submit"]:active { filter: brightness(0.93); }
 
-.success-text {
-  color: green;
-  font-weight: bold;
-  margin-top: 10px;
+/* Global message area */
+#messages {
+  max-width: 760px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+}
+.success-text { color: var(--ok); font-weight: 700; }
+.error-text   { color: var(--err); font-weight: 700; }
+
+/* Mobile tweaks */
+@media (max-width: 640px) {
+  body { padding: 16px; }
+  form, #messages { padding: 16px; }
 }
