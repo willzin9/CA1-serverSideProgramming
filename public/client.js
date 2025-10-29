@@ -69,7 +69,7 @@ function validateEircode(value) {
 }
 
 
-function handleSubmit(event) {
+ handleSubmit(event) {
   console.log('🚀 handleSubmit fired');
   event.preventDefault();
   getEl('messages').textContent = '';
@@ -78,7 +78,7 @@ function handleSubmit(event) {
   const fields = ['first_name', 'last_name', 'email', 'phone_number', 'eircode'];
   let firstInvalid = null;
 
-  fields.forEach(clearError);
+  fields.forEach(clearErrofunctionr);
 
   const values = {
     first_name: getEl('first_name').value.trim(),

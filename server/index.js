@@ -1,4 +1,5 @@
 // 🧱 1️⃣ Imports and setup
+
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -8,11 +9,14 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
+
 // Serve the frontend (public folder)
 const path = require('path');
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 const PORT = process.env.PORT || 3000;
+
+// log every request
 app.use((req, res, next) => {
   console.log('REQ:', req.method, req.url);
   next();
@@ -111,19 +115,35 @@ app.post('/submit', (req, res) => {
       });
 
     // --- Response handling ---
-    if (errors.length > 0) {
-      return res.status(400).json({ success: false, errors });
-    }
+if (errors.length > 0) {
+  return res.status(400).json({ success: false, errors });
+}
 
-    res.status(200).json({
-      success: true,
-      message: 'Validated. Ready to insert.',
-    });
-  } catch (err) {
+// ✅ Insert into database (only when validation passed)
+const SQL = `
+  INSERT INTO user_data (first_name, last_name, email, phone_number, eircode)
+  VALUES (?, ?, ?, ?, ?)
+`;
+const params = [first_name, last_name, email, phone_number, eircode];
+
+db.run(SQL, params, function (err) {
+  if (err) {
+    console.error('DB insert error:', err);
+    return res.status(500).json({ success: false, message: 'Database error.' });
+  }
+  return res.status(200).json({
+    success: true,
+    message: 'Data inserted successfully.',
+    id: this.lastID
+  });
+});
+
+} catch (err) {
     console.error('POST /submit error:', err);
     res.status(500).json({ success: false, message: 'Internal server error.' });
   }
 });
+
 
 // 🚦 4️⃣ Test route
 app.get('/', (req, res) => {
