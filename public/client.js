@@ -1,151 +1,130 @@
 console.log('✅ client.js loaded');
 
-function getEl(id) {
-  return document.getElementById(id);
-}
+// ---------- helpers ----------
+function getEl(id) { return document.getElementById(id); }
+function isAlphanumeric(str) { return /^[a-zA-Z0-9]+$/.test(str); }
+function isDigits(str) { return /^\d+$/.test(str); }
+function startsWithDigit(str) { return /^\d/.test(str); }
+function isEmailLike(str) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str); }
 
-function isAlphanumeric(str) {
-  return /^[a-zA-Z0-9]+$/.test(str);
-}
-
-function isDigits(str) {
-  return /^\d+$/.test(str);
-}
-
-function startsWithDigit(str) {
-  return /^\d/.test(str);
-}
-
-function isEmailLike(str) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str);
-}
-
-
+// ---------- error ui ----------
 function showError(inputId, message) {
   const input = getEl(inputId);
   const errorEl = getEl(`${inputId}_error`);
-  input.classList.add('error-input');
-  errorEl.classList.add('error-text');
-  errorEl.textContent = message;
+  if (input) input.classList.add('error-input');
+  if (errorEl) {
+    errorEl.classList.add('error-text');
+    errorEl.textContent = message;
+  }
 }
-
 function clearError(inputId) {
   const input = getEl(inputId);
   const errorEl = getEl(`${inputId}_error`);
-  input.classList.remove('error-input');
-  errorEl.textContent = '';
-  errorEl.classList.remove('error-text');
+  if (input) input.classList.remove('error-input');
+  if (errorEl) {
+    errorEl.textContent = '';
+    errorEl.classList.remove('error-text');
+  }
 }
 
-
+// ---------- validators ----------
 function validateName(value, label) {
   if (!value) return { ok: false, msg: `${label} is required.` };
   if (!isAlphanumeric(value)) return { ok: false, msg: `${label} must contain letters and numbers only.` };
   if (value.length > 20) return { ok: false, msg: `${label} must be at most 20 characters.` };
   return { ok: true };
 }
-
 function validateEmail(value) {
-  if (!value) return { ok: false, msg: "Email is required." };
-  if (!isEmailLike(value)) return { ok: false, msg: "Enter a valid email address." };
+  if (!value) return { ok: false, msg: 'Email is required.' };
+  if (!isEmailLike(value)) return { ok: false, msg: 'Enter a valid email address.' };
   return { ok: true };
 }
-
 function validatePhone(value) {
-  const normalized = value.replace(/\s+/g, '');
-  if (!normalized) return { ok: false, msg: "Phone number is required." };
-  if (!isDigits(normalized)) return { ok: false, msg: "Phone number must contain digits only." };
-  if (normalized.length !== 10) return { ok: false, msg: "Phone number must be exactly 10 digits." };
+  const normalized = String(value).replace(/\s+/g, '');
+  if (!normalized) return { ok: false, msg: 'Phone number is required.' };
+  if (!isDigits(normalized)) return { ok: false, msg: 'Phone number must contain digits only.' };
+  if (normalized.length !== 10) return { ok: false, msg: 'Phone number must be exactly 10 digits.' };
   return { ok: true };
 }
-
 function validateEircode(value) {
-  const normalized = value.trim().toUpperCase();
-  if (!normalized) return { ok: false, msg: "Eircode is required." };
-  if (normalized.length !== 6) return { ok: false, msg: "Eircode must be 6 characters." };
-  if (!startsWithDigit(normalized)) return { ok: false, msg: "Eircode must start with a number." };
-  if (!isAlphanumeric(normalized)) return { ok: false, msg: "Eircode must contain letters and numbers only." };
+  const normalized = String(value).trim().toUpperCase();
+  if (!normalized) return { ok: false, msg: 'Eircode is required.' };
+  if (normalized.length !== 6) return { ok: false, msg: 'Eircode must be 6 characters.' };
+  if (!startsWithDigit(normalized)) return { ok: false, msg: 'Eircode must start with a number.' };
+  if (!isAlphanumeric(normalized)) return { ok: false, msg: 'Eircode must contain letters and numbers only.' };
   return { ok: true };
 }
 
-
- handleSubmit(event) {
-  console.log('🚀 handleSubmit fired');
+// ---------- submit handler ----------
+function handleSubmit(event) {
   event.preventDefault();
-  getEl('messages').textContent = '';
-  getEl('messages').className = '';
+  console.log('🚀 handleSubmit fired');
+
+  const msg = getEl('messages');
+  msg.textContent = '';
+  msg.className = '';
 
   const fields = ['first_name', 'last_name', 'email', 'phone_number', 'eircode'];
-  let firstInvalid = null;
 
-  fields.forEach(clearErrofunctionr);
+  // clear previous field errors
+  fields.forEach(clearError);
 
-  const values = {
+  // gather payload
+  const payload = {
     first_name: getEl('first_name').value.trim(),
     last_name: getEl('last_name').value.trim(),
     email: getEl('email').value.trim(),
     phone_number: getEl('phone_number').value.trim(),
-    eircode: getEl('eircode').value.trim()
+    eircode: getEl('eircode').value.trim().toUpperCase(),
   };
 
-  const validators = {
-    first_name: validateName(values.first_name, 'First name'),
-    last_name: validateName(values.last_name, 'Last name'),
-    email: validateEmail(values.email),
-    phone_number: validatePhone(values.phone_number),
-    eircode: validateEircode(values.eircode)
+  // client-side validation (mirror server)
+  const results = {
+    first_name: validateName(payload.first_name, 'First name'),
+    last_name: validateName(payload.last_name, 'Last name'),
+    email: validateEmail(payload.email),
+    phone_number: validatePhone(payload.phone_number),
+    eircode: validateEircode(payload.eircode),
   };
 
-  for (const field of fields) {
-    const result = validators[field];
-    if (!result.ok) {
-      showError(field, result.msg);
-      if (!firstInvalid) firstInvalid = field;
+  let firstInvalid = null;
+  for (const f of fields) {
+    if (!results[f].ok) {
+      showError(f, results[f].msg);
+      if (!firstInvalid) firstInvalid = f;
     }
   }
 
   if (firstInvalid) {
     getEl(firstInvalid).focus();
-    getEl('messages').textContent = "Please fix the highlighted fields.";
-    getEl('messages').classList.add('error-text');
-  } else {
-    getEl('messages').textContent = "Form is valid. Ready to submit.";
-    getEl('messages').classList.add('success-text');
-    } else {
-  // Build payload from inputs
-  const payload = {
-    first_name: getEl('first_name').value.trim(),
-    last_name:  getEl('last_name').value.trim(),
-    email:      getEl('email').value.trim(),
-    phone_number: getEl('phone_number').value.trim(),
-    eircode:      getEl('eircode').value.trim().toUpperCase()
-  };
+    msg.textContent = 'Please fix the highlighted fields.';
+    msg.classList.add('error-text');
+    return;
+  }
 
-  // Disable button to prevent double submit
+  // disable submit (prevent double click)
   const submitBtn = event.submitter || document.querySelector('button[type="submit"]');
   if (submitBtn) submitBtn.disabled = true;
 
-  // Send to backend
+  // send to backend
   fetch('/submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   })
     .then(async (resp) => {
       const data = await resp.json();
-      const msg = getEl('messages');
       msg.className = '';
 
       if (resp.ok) {
         msg.textContent = data.message || 'Form submitted successfully.';
         msg.classList.add('success-text');
 
-        // Optional: clear form after success
-        ['first_name','last_name','email','phone_number','eircode'].forEach(clearError);
-        document.getElementById('userForm').reset();
+        // optional: reset form
+        getEl('userForm').reset();
         getEl('first_name').focus();
 
-        // Optional: show ID returned by the server
+        // optional: show DB id
         if (data.id) {
           const note = document.createElement('div');
           note.textContent = `Saved with ID #${data.id}`;
@@ -164,19 +143,17 @@ function validateEircode(value) {
       }
     })
     .catch((err) => {
-      const msg = getEl('messages');
+      console.error('Fetch error:', err);
       msg.className = '';
       msg.textContent = 'Network error. Try again.';
       msg.classList.add('error-text');
-      console.error(err);
     })
     .finally(() => {
       if (submitBtn) submitBtn.disabled = false;
     });
 }
 
-
-
+// attach listeners
 window.addEventListener('DOMContentLoaded', () => {
   const form = getEl('userForm');
   form.addEventListener('submit', handleSubmit);
